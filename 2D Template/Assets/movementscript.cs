@@ -11,21 +11,28 @@ public class movementscript : MonoBehaviour
     private Rigidbody2D rb2d;
 
     private float _movement;
+
     //this is to prevent double jumps
     public bool isGrounded;
     private SpriteRenderer Sprite;
     private GameObject boxRef;
+
     RaycastHit2D hitInfo;
+
    // the code that prevents the double jump
-    Vector2 boxSize = new Vector2(0.25f, 0.01f);
+    public Vector2 boxSize = new Vector2(0.25f, 0.01f);
+    public Vector3 boxoffset;
+
+    // the code from the mario video that explains how box casting works.
     void FixedUpdate()
     {
+        hitInfo = Physics2D.BoxCast(transform.position - new Vector3(0, Sprite.bounds.extents.y + boxSize.y + 0.01f, 0) + boxoffset, boxSize, 0, Vector2.down, boxSize.y);
+        boxRef.transform.position = transform.position - new Vector3(0, Sprite.bounds.extents.y + boxSize.y + 0.01f, 0) + boxoffset;
         boxRef.transform.localScale = boxSize;
-        boxRef.transform.position = transform.position = new Vector3(0, Sprite.bounds.extents.y + boxSize.y + 0.01f, 0);
-        hitInfo = Physics2D.BoxCast(transform.position = new Vector3(0, Sprite.bounds.extents.y + boxSize.y + 0.01f, 0), boxSize, 0, Vector2.down, boxSize.y);
+
         if (hitInfo)
         {
-            Debug.Log("toughting the ground!=" + hitInfo.transform.gameObject.name);
+            Debug.Log("touching the ground!=" + hitInfo.transform.gameObject.name);
             isGrounded = true;
 
         }
@@ -35,13 +42,6 @@ public class movementscript : MonoBehaviour
             Debug.Log("in the air >:(");
             isGrounded = false;
         }
-
-        if (Input.GetButtonDown("jump") && isGrounded)
-        {
-            rb2d.AddForce(Vector2.up * jumpHeight);
-        }
-
-       
     }
     
 
@@ -49,7 +49,9 @@ public class movementscript : MonoBehaviour
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
-       
+        Sprite = GetComponent<SpriteRenderer>();
+        isGrounded = true;
+        boxRef = GameObject.Find("BoxReference");
     }
 
     // Update is called once per frame
@@ -64,16 +66,17 @@ public class movementscript : MonoBehaviour
         _movement = ctx.ReadValue<Vector2>().x * moveSpeed;
     }
 
-     public void Jump(InputAction.CallbackContext ctx)
+
+    public void Jump(InputAction.CallbackContext ctx)
     {
-        if (ctx.ReadValue<float>() == 1)
+        if (ctx.ReadValue<float>() == 1 && isGrounded)
         {
             rb2d.linearVelocityY = jumpHeight;
         }
-    
+
 
     }
 
-   
+
 
 }
