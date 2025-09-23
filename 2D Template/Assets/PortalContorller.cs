@@ -13,7 +13,7 @@ public class PortalContorller : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            if (Vector2.Distance(player.transform.position, transform.position) > 0.3f)
+            if (Vector2.Distance(player.transform.position, transform.position) > 0.6f)
             {
                 player.transform.position = destination.transform.position;
             }
