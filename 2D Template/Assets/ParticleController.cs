@@ -17,12 +17,12 @@ public class ParticleController : MonoBehaviour
 
     float counter;
 
-    [Obsolete]
+ 
     private void Update()
     {
         counter += Time.deltaTime;
 
-        if (MathF.Abs(playerRb.velocity.x) > occurAfterVelocity)
+        if (MathF.Abs(playerRb.linearVelocity.x) > occurAfterVelocity)
         {
             if (counter > dustFormationPeriod)
                 {
